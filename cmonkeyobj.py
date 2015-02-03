@@ -45,9 +45,9 @@ class cMonkey2:
     def __init__( self, dbfile ):
         self.dbfile = dbfile
         conn = sql3.connect( dbfile )
-        tmp = pd.read_sql('select last_iteration from run_infos', conn)
+        tmp = pd.read_sql('select max(iteration) from iteration_stats', conn) ##last_iteration from run_infos', conn)
         conn.close()
-        self.iteration = tmp.ix[0,0] ##.max()[0] ## get iteration
+        self.iteration = tmp.max()[0] ## get iteration
         print 'iteration =', self.iteration
         self.tables = self.__read_all_tables( dbfile, iteration=self.iteration )
         #self.iteration = max(self.tables['motif_infos'].iteration)
@@ -86,6 +86,7 @@ class cMonkey2:
         self.iteration = tmp.max()[0] ## get iteration
         print 'iteration =', self.iteration
         self.tables = self.__read_all_tables( self.dbfile, iteration=self.iteration )        
+        self.stats = None
 
     def get_feature_names( self ):
         feature_names_file = './cache/' + self.species + '_feature_names'
